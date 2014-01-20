@@ -1,0 +1,20 @@
+# squirm.patterns.dist
+#
+# The ordering of lines is this file is critical
+# Please see http://www.senet.com.au/squirm/ for examples
+#
+
+# Lines have the form:
+# 	regex|regexi pattern replacement [[^]accelerator_string[$]]
+# or
+# 	abort filename_extension
+#
+#
+# Examples of valid lines:
+#
+# regex  ^.*/n32e301\.exe$ http://www.mydomain/path_to/n32e301.exe
+# regexi ^.*/n32e301\.exe$ http://www.mydomain/path_to/n32e301.exe
+# regex  ^.*/n32e301\.exe$ http://www.mydomain/path_to/n32e301.exe n32e301.exe$
+# abort .gif
+# abort .html
+

@@ -1,0 +1,585 @@
+<html>
+<head>
+<title>Squirm - A redirector for Squid</title>
+<body bgcolor="#bbcef2">
+
+<h1>
+<p align=center>
+<img src="squirm.gif" width=38 height=46 alt="Squirm">
+<br>
+Squirm - A redirector for Squid
+</p>
+</h1>
+Choose a location closest to you:
+<ul>
+<li><a href="http://www.senet.com.au/squirm/">Australia</a>
+<li><a href="http://www.elab.co.za/squirm/">South Africa</a>
+</ul>
+<hr>
+
+<p>
+Squirm is a fast &amp; configurable redirector for the <a
+href="http://squid.nlanr.net">Squid Internet Object Cache</a>.
+It requires the <a href="http://www.gnu.org/order/ftp.html">GNU Regex
+Library</a> (now included in the Squirm source), and of course, a working
+<a href="http://squid.nlanr.net">Squid</a>.  It is available free under
+the terms of the <a href="GPL">GNU GPL</a>.
+
+<menu>
+<li><a href="#features">Features</a>
+<li><a href="#download">Download Squirm</a>
+<li><a href="#install">Installing Squirm</a>
+<li><a href="#config">Configuring Squirm</a>
+<ul>
+<li><a href="#squirm_local">Local Addresses</a>
+<li><a href="#squirm_patterns">Squirm Patterns</a>
+</ul>
+<li><a href="#examples">squirm.patterns Examples</a>
+<ul>
+<li><a href="#isp_example">Example for an ISP</a>
+<li><a href="#school_examples">Examples for Schools</a>
+</ul>
+<li><A href="#testing">Testing Squirm Interactively</a>
+<li><a href="#logs">Squirm Log Files</a>
+<li><a href="#hup">Reconfiguring Squirm</a>
+<li><a href="#credits">Credits &amp; Copyright</a>
+</menu>
+
+<p>
+<hr noshade>
+<b>Note:</b>  This web page documents version 1.0-BetaB.  There is,
+in fact, a newer version: <a href="squirm-1.23.tgz">squirm-1.23</a>, but
+I haven't documented it yet.  This new version has some new features:
+<menu>
+<li>new squirm.conf file allows different redirection lists based
+upon different sets of source network addresses in CIDR notation.
+<li>Automagic accelerator string generation.
+<li>It compiles with a simple 'make'
+<li>A few other minor features.
+<li>Use your systems regex library
+</menu>
+
+<a name="features"></a>
+<hr>
+<h2>Features</h2>
+
+
+<p>
+Squirm has the following features:
+
+<ul>
+<li>Very, very fast
+<li>Virtually no memory usage
+<li>It can re-read it's config files while running by sending it a HUP signal
+<li>Interactive test mode for checking new configs
+<li>Full regular expression matching and replacement
+<li>Config files for patterns and IP addresses.
+<li>If you mess up the config file, Squirm runs in <em>Dodo Mode</em> so
+your squid keeps working :-)
+</ul>
+
+<p>
+I started writing it because the existing redirector scripts used too much
+memory and all were too slow for Squids that receive a lot of requests.
+
+<p>
+On my Pentium Pro 200 running Linux, it manages to do 16,440 lines
+per second (that's 59 million lines per hour!) using my
+<A href="squirm.local">squirm.local</a> and <a
+href="squirm.patterns">squirm.patterns</a> config files.
+
+<p>
+It can handle nifty things like file mirrors with the regex pattern
+replacement strings, and do site blocking - useful for schools.  It could
+also do such things as banner add rewriting, and just about anything
+else :-)
+
+<a name="download"></a>
+<hr>
+<h2>Download Squirm</h2>
+
+<p>
+The latest version is <b>squirm-1.0betaB</b> which you can
+download as a normal <a href="squirm-1.0betaB.tar">tar file</a>
+or a <a href="squirm-1.0betaB.tar.gz">gzipped tar file</a>.
+
+<p>
+The most recent version is always available from this page
+at <a href="http://www.senet.com.au/squirm/">
+<tt>http://www.senet.com.au/squirm/</tt></a>
+
+<p>
+Mark Cooke has kindly produced RedHat RPM's for Squirm (and
+for Squid) which are available from:
+
+<ul>
+<li><b>rpm</b>: <a href="ftp://pc24.sr.bham.ac.uk/pub/packages/RPMS/i386/">ftp://pc24.sr.bham.ac.uk/pub/packages/RPMS/i386/</a>
+<li><b>source rpm</b>: <a href="ftp://pc24.sr.bham.ac.uk/pub/packages/SRPMS/">ftp://pc24.sr.bham.ac.uk/pub/packages/SRPMS/</a>
+<li><b>spec file</b>: <a href="ftp://pc24.sr.bham.ac.uk/pub/packages/SPECS/">ftp://pc24.sr.bham.ac.uk/pub/packages/SPECS/</a>
+</ul>
+
+<a name="install"></a>
+<hr>
+<h2>Installing Squirm</h2>
+
+<p>
+<ol>
+<li>Untar the <a href="squirm-1.0betaB.tar">Squirm tar file</a>
+
+<p>
+<li>Compile the GNU Regex library by doing:
+
+<pre>
+cd regex
+./configure
+make clean
+make
+cp -p regex.o regex.h ..
+</pre>
+
+This step is a bit ugly - I welcome anyone who has experience with the
+<tt>configure</tt> script to incorporate this directly into Squirm -
+Anyone ?
+
+<p>
+<li>Search for <em>cache_effective_user</em> in your Squid configuration
+file (usually <tt>/usr/local/squid/etc/squid.conf</tt> and take note of
+the Squid user and group id that squid runs under.  (Squirm won't work
+if Squid executes as <em>root</em>!)
+
+<p>
+<li>Edit the Makefile and find the <tt>install:</tt> section. You will
+need to change the installation user and group id to the ones Squid
+executes as.  (The default is user <tt>squid</tt>, group <tt>squid</tt>).
+If you don't want to install Squirm in <tt>/usr/local</tt>, you'll need
+to change the directory paths as well.
+
+<p>
+<li>If you changed the directory path for Squirm in the Makefile above,
+then you will need to edit the file <tt>paths.h</tt> to reflect the new
+path for log files.
+
+<p>
+<li>type <tt>make</tt>
+
+<p>
+<li><em>su</em> to root and type <tt>make install</tt>
+
+<p>
+<li>Try running squirm to make sure the installation worked:
+
+<table>
+<tr>
+<td bgcolor="#ffffff">
+<pre>
+orbit:/usr/local/src/squirm-1.0betaB# whoami
+root
+orbit:/usr/local/src/squirm-1.0betaB# /usr/local/squirm/bin/squirm
+Squirm running as UID 0: writing logs to stderr
+Wed Mar 11 13:20:37 1998:unable to open local addresses file [/usr/local/squirm/etc/squirm.local]
+Wed Mar 11 13:20:37 1998:unable to open redirect patterns file
+Wed Mar 11 13:20:37 1998:Invalid condition - continuing in DODO mode
+Wed Mar 11 13:20:37 1998:Squirm (PID 29760) started
+[Crtl + C]
+</pre>
+</td>
+</tr>
+</table>
+(Yep, it did work, the error above indicates that the config files
+don't yet exist :-)
+
+<p>
+<li>Once you have Squirm up and running, to get Squid to pass requests
+through Squirm, you need to add a couple of lines to your squid.conf
+file:
+
+<pre>
+redirect_program /usr/local/squirm/bin/squirm
+redirect_children 10
+</pre>
+
+the number of children is dependant on the load on your squid box.
+Try 10 and use the cachemgr.cgi CGI to see if all redirector processes
+get used, and if they do, you can raise this number.
+
+</ol>
+
+<a name="config"></a>
+<hr>
+<h2>Configuring Squirm</h2>
+
+<p>
+By default, the two config files are located as
+<tt>/usr/local/squirm/etc/squirm.local</tt> and
+<tt>/usr/local/squirm/etc/squirm.patterns</tt>
+
+You need to create these two files from scratch with the aid of the
+following instructions:
+
+<a name="squirm_local"></a>
+<h3>Local Addresses</h3>
+
+You need to place abbreviations for class C networks in the
+<tt><b>squirm.local</b></tt> file for your clients.  Here's an example:
+
+<pre>
+127.0.0
+10.2.3
+192.168.1
+</pre>
+</td>
+</tr>
+
+<p>
+These are used to determine if Squirm should rewrite a URL.  You wouldn't
+normally want any Squid neighbours to be able to use your redirector
+as the extra load of ICP requests would bog down your machine, so don't
+include them in the file.
+
+<p>
+For the above config file, requests to the Squid from 10.2.3.4 would be
+accepted, whilst requests from 1.2.3.4 would be ignored.
+
+<p>
+There is currently no plan to implement CIDR notation because Squirm
+uses simple integer comparisons to make lookups really quick.
+
+<a name="squirm_patterns"></a>
+<h3>Squirm Patterns</h3>
+
+<h4>Syntax</h4>
+
+<p>
+The syntax of lines in the <tt><b>squirm.patterns</b></tt> file 
+are of the form:
+<pre>
+	regex|regexi pattern replacement [[^]accelerator_string[$]]
+</pre>
+or
+<pre>
+	abort .filename_extension
+</pre>
+
+
+
+<h4><tt>regex|regexi</tt></h4>
+<p>
+Full regex matching and replacement is made available by the use of the
+GNU Regex libary.  It also supports pattern buffers.
+
+<p>
+Let's say you want to redirect requests to a local URL for a common
+file, where it's matched case sensitively:
+<pre>
+regex  ^.*/n32e301\.exe$ http://www.mydomain/path_to/n32e301.exe
+</pre>
+this means: replace URLs ending in /n32e301.exe with the URL of your
+local copy.
+
+<p>
+To do the same as above except case insensitively, you would use
+<tt>regexi</tt> instead of <tt>regex</tt> at the start of the line.
+
+<h4>Accelerator Strings</h4>
+
+<p>
+The accelerator string is used to avoid regex comparisons of URLs
+unless they are <em>close</em> to the pattern expected.  Squirm
+first compares a URL against the accelerator string before it
+bothers do do a proper regex comparson, and saves many CPU cycles
+on a busy machine. Note: you should always use accelerator strings
+if possible on a busy box!
+
+<p>
+For the above example, a speedup is acheived through the use of the
+accelerator string <tt>n32e301.exe$</tt>, so the line would look like:
+
+<pre>
+regex  ^.*/n32e301\.exe$ http://www.mydomain/path_to/n32e301.exe n32e301.exe$
+</pre>
+
+<p>
+The accelerator string can have a leading caret '^' OR a trailing dollar
+'$' to indicate that the rough match should search at the start of end
+of the URL respectively.
+
+<h4>Abort Extensions</h4>
+
+<p>
+The reason behind use of the abort extension is a massive speedup
+by aborting pattern searches for URLs that end in a certain filename
+extension. (Why traverse the entire patterns list and do comparisons
+when they won't be matched anyway ?)
+
+<p>
+Let's say we don't need to traverse the list for files ending in 
+<tt>.gif</tt>.  The line needed is:
+<pre>
+abort .gif
+</pre>
+
+<a name="examples"></a>
+<hr>
+<h2><tt>squirm.patterns</tt> Examples</h2>
+
+<a name="isp_example"></a>
+<h3>An example for an ISP</h3>
+
+<table>
+<tr>
+<td bgcolor="#ffffff">
+<pre>
+regexi ^http://tucows\.[^/]*/(.*$) http://tucows.mymirror.com/\1 ^http://tucows.
+
+abort .gif
+abort .html
+abort .jpg
+abort .htm
+
+regex .*/c16e401\.jar$ http://redirector1.senet.com.au/c16e401.jar c16e401.jar$
+regexi .*/c32e401\.jar$ http://redirector1.senet.com.au/c32e401.jar c32e401.jar$
+regex .*/cb16e401\.exe$ http://redirector1.senet.com.au/cb16e401.exe cb16e401.exe$
+regex .*/cb32e401\.exe$ http://redirector1.senet.com.au/cb32e401.exe cb32e401.exe$
+regex .*/cc16e401\.exe$ http://redirector1.senet.com.au/cc16e401.exe cc16e401.exe$
+regex .*/cc32e401\.exe$ http://redirector1.senet.com.au/cc32e401.exe cc32e401.exe$
+</pre>
+</td>
+</tr>
+</table>
+
+<p>
+The first line contains an accelerator string <tt>^http://tucows.</tt>
+so Squirm has to do the regex comparison only if the URL matches
+it. Because this is the first line in the squirm.patterns file, much time
+is saved by not having to do a regex comparison for every single URL.
+(Accelerator strings are not compulsary on a config line, but the speed
+improvement is quite large.)
+
+<p>
+The first regex comparison uses a case insensitive pattern which matches
+HTTP for any hostname beginning with <em>tucows</em>.  It stores the
+path information in a pattern buffer which is later replayed in the URL
+replacement by using <tt>\1</tt> (up to 10 replays possible)
+
+<p>
+The <tt>abort</tt> extensions are used so that comparisons for none of
+the following lines continues unless they don't match filenames listed
+in the abort lines.  It is wise to include the most frequent filename
+extension of requests in cases where the abort extension can be used,
+but not filename extensions that occur infrequently.  <tt>.gif, .jpg,
+.html, .htm</tt> are good candidates for the abort extension.
+
+<a name="school_examples"></a>
+<h3>Examples for Schools</h3>
+
+<p>
+You may wish to have a way of blocking access to sites which contain
+material unsuitable for viewing by children and return them a web page
+which let's them know they have requested a site which is blocked.
+
+<h4>Simple Block List</h4>
+
+<pre>
+regexi ^http://www\.playboy\.com/.* http://www/notallowed.html
+regexi ^http://www\.xxx\.com/.* http://www/notallowed.html
+</pre>
+
+<p>
+This will return the URL <tt>http://www/notallowed.html</tt> to
+anyone requesting URLs starting with <tt>http://www.playboy.com</tt>
+or <tt>http://www.xxx.com</tt>
+
+<p>
+For long lists for sites to block the use of accelerator strings
+may help, in which case the above example would be:
+
+<pre>
+regexi ^http://www\.playboy\.com/ http://www/notallowed.html ^http://www.playboy.com
+regexi ^http://www\.xxx\.com/ http://www/notallowed.html ^http://www.xxx.com
+</pre>
+
+<h4>Block List with URL notification</h4>
+
+<p>
+If you would like to include the blocked URL requested in the resulting
+page (something like "The URL http://www.playboy.com/file.jpg has been
+blocked", you could create a CGI which takes the URL as an argument,
+and add the request to the pattern replacement.
+
+<pre>
+regexi ^(http://www\.playboy\.com/.*) http://www/cgi-bin/na?url=\1
+</pre>
+
+This might be a good choice for a list of hostnames you may already
+have to add to the list, for example:
+
+<pre>
+cat list-of-banned-sites \
+	| sed -e "s/\./\\\./g" \
+	| awk '{ print "regexi ^(http://" $1 "/.*) http://www/cgi-bin/na?url=\1" }' \
+	>> /usr/local/squirm/etc/squirm.patterns	
+</pre>
+
+<p>
+Again, adding accelerator strings to long lists may help with speed.
+
+
+<a name="testing"></a>
+<hr>
+<h2>Testing Squirm Interactively</h2>
+
+<p>
+When Squirm is run as root, it goes into interactive mode which echoes
+all information that would normally be logged to standard error output.
+This gives the opportunity to test a configuration file modification
+before restarting the current squirm processes on the machine.
+
+<p>
+Optionally, you can supply the path of a squirm patterns config file,
+if it's not in the default location, for the first argument.
+
+<p>
+Squid sends requests to the standard input of a redirector process with
+the form:
+<pre>
+	URL   src_address   ident   method
+</pre>
+The <em>ident</em> field is usually a dash '-'. For Squirm to do any
+redirection, the method is <em>GET</em> and the <em>src_address</em>
+must match an address from the <tt>squirm.local</tt> file.
+
+<p>
+The following text is an example of running squirm interactively, with
+the input lines to test marked in bold:
+
+<table>
+</tr>
+<td bgcolor="#ffffff">
+<pre>
+frog:~\:# whoami
+root
+/usr/local/squirm/bin/squirm
+Squirm running as UID 0: writing logs to stderr
+Tue Mar 10 22:00:34 1998:Loading IP List
+Tue Mar 10 22:00:34 1998:Reading Patterns from config /usr/local/squirm/etc/squirm.patterns
+Tue Mar 10 22:00:34 1998:Squirm (PID 16955) started
+<b>http://tucows.com/downloads/win95/n32e301p.exe 127.0.0.1 - GET</b>
+http://tucows.senet.com.au/downloads/win95/n32e301p.exe 127.0.0.1 - GET
+Tue Mar 10 22:00:57 1998:http://tucows.com/downloads/win95/n32e301p.exe:http://tucows.senet.com.au/downloads/win95/n32e301p.exe
+<b>http://www.somewhere.com/path/file 127.0.0.1 - GET</b>
+http://www.somewhere.com/path/file 127.0.0.1 - GET
+<b>[Ctrl + D]</b>
+</pre>
+</td>
+</tr>
+</table>
+
+Alternatively you can provide input from a file by using the syntax:
+<pre>
+/usr/local/squirm/bin/squirm < filename
+</pre>
+
+
+<a name="logs"></a>
+<hr>
+<h2>Squirm Log Files</h2>
+
+<p>
+There are several log files in <tt>/usr/local/squirm/logs</tt> which
+are normally only viewable by the squid user id and root:
+
+<dl>
+<dt>squirm.debug
+<dd>Contains verbose info if DEBUG is defined when compiling
+<dt>squirm.error
+<dd>Contains messages for invalid config or other alert conditions
+<dt>squirm.fail
+<dd>Lists instances where length of URL was too short (< 4 chars)
+<dt>squirm.info
+<dd>Squirm restarts and reconfigurations
+<dt>squirm.match
+<dd>Shows URLs which were successfully replaced by a pattern replacement
+</dl>
+
+The <tt>/usr/local/squid/logs</tt> directory *must* be writeable by the
+user id that Squid executes as.  This was set up for you when <tt>make
+install</tt> was executed.
+
+
+<a name="hup"></a>
+<hr>
+<h2>Reconfiguring Squirm</h2>
+
+<p>
+When you have modified either <tt>squirm.local</tt> or
+<tt>squirm.patterns</tt> all of the running squirm processes need to
+be restarted by a HUP signal.
+
+<p>
+(Restarting Squid will do this (by sending squid a HUP signal), but this
+usually isn't convenient because it makes squid become unvailable for
+a period of time.)
+
+<p>
+Under Linux, you can do this by typing:
+<pre>
+	killall -HUP squirm
+</pre>
+
+<p>
+On other systems you may have to write a small script:
+<pre>
+#!/bin/sh
+for PID in `ps -aux | grep redirector | grep -v grep | awk '{ print $2 }'`
+do
+	kill -HUP $PID
+done
+</pre>
+
+
+<hr>
+
+<h2>Credits &amp; Copyright</h2>
+
+<pre>
+Maintained by Chris Foote, chris@senet.com.au
+Copyright (C) 1998 Chris Foote & Wayne Piekarski
+
+If you find it useful, I'd like to know - please send email
+to chris@senet.com.au - Ta!
+
+Includes the GNU Regex library written by many authors - see
+regex/AUTHORS for details.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+Please see the file GPL in the source directory for full copyright
+information.
+</pre>
+
+
+<hr>
+<p>
+
+<font size=-1>File Last Modified:<font color=brown> Tue June 9 1998
+</font></font>
+
+<br>
+<img src="http://www.senet.com.au/cgi-bin/Count.cgi?sh=0|df=squirm-counter.dat" 
+alt="counter" width=1 height=1>
+
+</body>
+</html>
+

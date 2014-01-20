@@ -1,0 +1,13 @@
+Ok, supposed you've a working EMX installation, here are the steps needed 
+to build squirm under os/2:
+
+1] go into /regex directory and run 'make' here. Ignore warnings and errors 
+   about problems building examples, we don't need them.
+   copy regex.o .. 
+2] get out from /regex path and run 'make' into /src directory, you'll obtain 
+   a full working squirm.exe.
+3] as the squirm.exe obtained with step #2 contains debug informations also,
+   you could strip them playing:
+   emxbind -s squirm.exe 
+   
+That's all! Good luck ;-)

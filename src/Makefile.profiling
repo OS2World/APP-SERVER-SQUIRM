@@ -1,0 +1,54 @@
+# Makefile for Squirm
+#
+
+OFILES = squirm.o config.o log.o lists.o regex.o
+
+HFILES = squirm.h paths.h lists.h log.h
+
+GCC=gcc
+#GCC=checkergcc
+
+#EXTRALIBS=-lregex
+EXTRALIBS=
+LOPTS=-pg
+#EXTRALIBS=
+
+BINARIES = squirm
+
+CFLAGS = -Wall -g -pg
+#CFLAGS = -Wall
+
+all:	$(BINARIES)
+
+install:	all
+			install -m 755 -o root -g root -d /usr/local/squirm \
+			/usr/local/squirm/bin /usr/local/squirm/etc
+			install -m 750 -o squid -g squid -d /usr/local/squirm/logs
+			install -m 660 -o root -g squid squirm.local squirm.patterns \
+			/usr/local/squirm/etc
+			install -m 755 -o root -g root --strip squirm /usr/local/squirm/bin
+			
+
+squirm.o:	squirm.c $(HFILES)
+			$(GCC) -c squirm.c 		$(CFLAGS)
+
+config.o:	config.c $(HFILES)
+			$(GCC) -c config.c		$(CFLAGS)
+
+log.o:		log.c $(HFILES)
+			$(GCC) -c log.c		$(CFLAGS)
+
+lists.o:	lists.c $(HFILES)
+			$(GCC) -c lists.c		$(CFLAGS)
+
+squirm:		$(OFILES) $(HFILES)
+			$(GCC) -o squirm $(OFILES)	$(EXTRALIBS)  $(LOPTS)
+
+
+pure:		clean
+			rm -f *~
+
+clean:		
+			rm -f *.o core squirm
+
+

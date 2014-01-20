@@ -1,0 +1,10 @@
+# squirm.local.dist
+#
+# list your client's addresses here.  
+#
+# i.e. the addresses for machines that do 'GET requests', 
+# but don't include any Squid neighbours
+
+127.0.0
+10.0.0
+192.168.0

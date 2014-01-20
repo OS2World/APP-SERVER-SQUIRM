@@ -1,0 +1,59 @@
+# squirm.patterns.dist
+#
+# $Id: squirm.patterns.dist,v 1.1 1999/06/11 06:03:59 root Exp root $
+#
+# The ordering of lines is this file is critical
+# Please see http://www.senet.com.au/squirm/ for examples
+#
+
+###############################################################################
+###                              E X A M P L E S                            ###
+###############################################################################
+# Lines have the form:
+# 	regex|regexi pattern replacement [[^]accelerator_string[$]]
+# 	abort filename_extension
+#	abort_on_match on|off
+#	abortregex|abortregexi pattern   [[^]accelerator_string[$]]
+#
+#
+# Examples of valid lines:
+#
+#regex  ^.*/n32e301\.exe$ 			http://www.mydomain/path_to/n32e301.exe
+#regexi ^.*/n32e301\.exe$ 			http://www.mydomain/path_to/n32e301.exe
+#regex  ^.*/n32e301\.exe$ 			http://www.mydomain/path_to/n32e301.exe n32e301.exe$
+#abort /*.*/*.gif
+#abort .html
+#regex ^/*.*/*.gif 				http://localhost/transparent.gif
+#regex ^http://www.payland.com/banner/*.*/*.gif http://localhost/transparent.gif
+#regex ^http://212.131.152.26/*.*/*.gis 	http://localhost/dummy.gis
+#regex ^http://jeeves.flycast.com/gif/*.*/*.gif http://localhost/transparent.gif
+#regex ^http://ad-adex3.flycast.com/server/iframe/CashFiesta/*.*/* http://localhost/banner-a.html
+
+###############################################################################
+###  Let's filter:   U N W A N T E D   S i T E S                            ###
+###############################################################################
+regex ^http://www\.playboy\.com/.*	 	http://localhost/not_for_childrens.gif
+
+###############################################################################
+###  Let's filter:   B A N N E R S                                          ###
+###############################################################################
+regex doubleclick.net/*.*/*.gif      		http://localhost/transparent.gif
+regex ng.mybc.com/*.*/*.gif 			http://localhost/transparent.gif
+regex adsrotation.com/*.*/*.gif        		http://localhost/transparent.gif
+regex view.avenuea.com/view/*.*/*.gif  		http://localhost/transparent.gif
+regex ads.link4ads.com/*.*/*.gif  		http://localhost/transparent.gif
+regex ^http://adforce.adtech.de/?      		http://localhost/transparent.gif
+regex imgis.com/?adiframe|             		http://localhost/transparent.gif
+regex imgis.com/?adserv|               		http://localhost/transparent.gif
+regex imgis.net/*.*/*.gif              		http://localhost/transparent.gif
+regex g.akamai.net/*.*/*.gif           		http://localhost/transparent.gif
+regex akamaitech.net/n/*.*/*.gif       		http://localhost/transparent.gif
+regex multi1.rmuk.co.uk/RealMedia/ads/*.*/*.gif http://localhost/transparent.gif
+### added on 05/08/2000
+regex adimg.activeadv.net/network/*.*/*.gif	http://localhost/transparent.gif
+regex images.zdnet.com/adverts/imp/*.*/*.gif	http://localhost/transparent.gif
+regex images.zdnet.com/adverts/imp/*.*/*.jpg	http://localhost/transparent.jpg
+regex ^http://s0.bluestreak.com/ix.e?ir&s	http://localhost/transparent.gif
+regex ^http://www.nastydatabase.com/banner/	http://localhost/transparent.gif
+regex ^http://www.nastydatabase.com/servlet/	http://localhost/transparent.gif
+regex ^http://mt114.mtree.com/xbs/ 		http://localhost/transparent.gif

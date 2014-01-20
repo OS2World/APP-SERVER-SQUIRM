@@ -1,0 +1,62 @@
+SQUIRM-OS/2                            27-January-2001, Padova/Italy.
+
+This is the OS/2 Port of Squirm 1.0betaB, a URL redirector for SQUID.
+If you don't know what SQUID is, then you don't need this program.
+
+===== QUICK INSTALLATION GUIDE: =====		
+
+1) first install SQUID (we tested SQUIRM with SQUID 2.3.stable4)
+2) copy bin/* to the bin directory of your SQUID installation
+3) copy etc/* to the etc directory of your SQUID installation
+4) edit SQUIRM.CONF, SQUIRM.PATTERNS, SQUIRM.LOCAL according
+   to the documentation available at http://www.senet.com.au/squirm
+   (Actual version of the documentation is included for your convenience 
+    in the DOC directory in this archive)
+5) edit SQUID.CONF and:  
+    a) modify the redirect_program statement to:    
+       redirect_program squirm.exe    
+    b) modify the redirect_children statement to at least:
+       redirect_children 3         
+6) start squid
+7) good luck :-)
+
+==== IMPORTANT NOTES: =====
+
+1) ENVIRONMENT VARIABLE
+Our first port of the Squirm redirector used relative paths
+to access the ./log and ./etc subdirectories in the Squid installation tree.
+We later discovered that issuing a "squid.cmd -k reconfigure" command,
+to restart Squid with a new configuration, will cause Squirm to fail, 
+since it thought it was started from the root directory and hence
+it could not locate the ./log and ./etc subdirectories anymore.
+
+In this second build we modified the source code, so that Squirm now looks 
+for the SQUID_DIRECTORY environment variable. If such a variable exists, 
+Squirm can expand relative paths to absolute paths. If Squirm can not find the 
+environment variable, it uses relative paths. 
+(When using relative paths, Squirm works correctly, provided that you kill 
+and restart Squid instead of using "squid.cmd -k reconfigure").
+
+Please note that the SQUID_DIRECTORY environment variable must point to
+the Squid root directory (for example:  E:\squid). It should normally
+be set by the squid.cmd you should use to start Squid.
+
+
+2) INTERACTIVE MODE
+On Unix systems, Squirm normally performs file logging. But when Squirm
+is run as root, it goes into interactive mode and echoes to standard error 
+output all information that would normally be logged to file.
+This gives the opportunity to test a configuration file modification 
+before restarting the current squirm processes.
+
+Since OS/2 does not support users the same way Unix does, you can control
+Squirm behaviour through a flag file.
+If the etc/ directory contains the file squirm.interactive then
+squirm starts in interactive mode, otherwise normal file logging is performed.
+
+===== CONTACTS: =====
+
+This port was made by:   Antonio Manara Rossini <thetoy@vrglabs.cjb.net>
+		         Gian Maria Romanato <gm.romanato@bitman.cjb.net>
+
+You can also find us as WarpToy and Bitman in #os2ita on EFNET.		  

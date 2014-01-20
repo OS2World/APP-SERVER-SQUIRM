@@ -1,0 +1,10 @@
+# These are used to determine if Squirm should rewrite a URL. 
+# You wouldn't normally want any Squid neighbours to be able to use
+# your redirector as the extra load of ICP requests would bog down your 
+# machine, so don't include them in the file. 
+
+127.0.0
+192.168.0.0
+
+# For the above config file, requests to the Squid from 192.168.0.3 would 
+# be accepted, whilst requests from 1.2.3.4 would be ignored. 
